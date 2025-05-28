@@ -1,0 +1,45 @@
+# Default values for myapp
+
+replicaCount: 2
+
+image:
+  repository: 550829113882.dkr.ecr.us-east-1.amazonaws.com/app
+  tag: "282029"
+  pullPolicy: IfNotPresent
+
+nameOverride: "app"
+fullnameOverride: "app"
+
+deployment:
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+ingress:
+  enabled: true
+  className: "alb"
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/subnets: subnet-01a19d08635b7d042, subnet-0c50a743d5cdf4dff
+  paths:
+    - path: /
+      pathType: Prefix
+
+database:
+  user: postgres
+  password: aA-gRvs=lIu0uQ=KU8Z37U4-,H9bMX
+  host: infrastructurestack-gamedaydb3598290b-zhyqcxzzdrpo.cluster-ckzgw6c6alho.us-east-1.rds.amazonaws.com
+  name: gameday
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

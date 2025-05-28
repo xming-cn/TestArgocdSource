@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "myapp.fullname" . }}-deployment
+  labels:
+    {{- include "myapp.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.nameOverride }}
+  replicas: {{ .Values.replicaCount }}
+  strategy:
+    {{- toYaml .Values.deployment.strategy | nindent 4 }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.nameOverride }}
+    spec:
+      containers:
+      - name: {{ .Values.nameOverride }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        env:
+        - name: DB_USER
+          value: {{ .Values.database.user }}
+        - name: DB_PASSWORD
+          value: {{ .Values.database.password }}
+        - name: DB_HOST
+          value: {{ .Values.database.host }}
+        - name: DB_NAME
+          value: {{ .Values.database.name }}
+        ports:
+        - containerPort: {{ .Values.service.port }}
+          name: {{ include "myapp.fullname" . }}-deployment
+      restartPolicy: Always

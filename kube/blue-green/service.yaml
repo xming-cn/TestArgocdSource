@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: app-service
+  namespace: default
+  labels:
+    app: app
+spec:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: 80
+      protocol: TCP
+      name: http
+  selector:
+    app: app
+    # The active version (blue/green) is controlled by this label
+    version: blue  # Initially points to blue deployment

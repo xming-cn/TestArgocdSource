@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app-deployment
+  namespace: default
+  labels:
+    app: app-deployment
+spec:
+  selector:
+    matchLabels:
+      app: app
+  replicas: 2
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+      - name: app
+        image: 550829113882.dkr.ecr.us-east-1.amazonaws.com/app:282029
+        env:
+        - name: DB_USER
+          value: postgres
+        - name: DB_PASSWORD
+          value: aA-gRvs=lIu0uQ=KU8Z37U4-,H9bMX
+        - name: DB_HOST
+          value: infrastructurestack-gamedaydb3598290b-zhyqcxzzdrpo.cluster-ckzgw6c6alho.us-east-1.rds.amazonaws.com
+        - name: DB_NAME
+          value: gameday
+        ports:
+        - containerPort:  80
+          name: app-deployment
+      restartPolicy: Always
